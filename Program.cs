@@ -11,6 +11,8 @@ namespace MercadoriasAlura
         static void Main(string[] args)
         {
 
+            
+
             // Tudo certo
 
             //Compra compra = new Compra()
@@ -29,7 +31,7 @@ namespace MercadoriasAlura
 
 
             int options = 0;
-            while(options != 5)
+            while(options != 6)
             {
                 try
                 {
@@ -50,6 +52,9 @@ namespace MercadoriasAlura
                         AtualizarMerc();
                     } else if (options == 5)
                     {
+                        RealizarCompra();
+                    } else if (options == 6)
+                    {
                         Console.WriteLine("Programa finzalizado com sucesso . . .");
                     } else
                     {
@@ -69,6 +74,32 @@ namespace MercadoriasAlura
         }
 
      
+        private static void RealizarCompra()
+        {
+
+            Console.Write("Informe ID da mercadoria:");
+            int IdTeste = int.Parse(Console.ReadLine());
+
+            using(var contexto = new MercadoriaContext())
+            {
+                var mercadorias = contexto.Mercadoria.ToList();
+                for (int i = 0; i < mercadorias.Count; i++)
+                {
+                    if (IdTeste == mercadorias[i].Id)
+                    {
+                        Console.WriteLine($"Mercadoria encontrada: {mercadorias[i].Descricao}");
+                        Compra compra = new Compra();
+                        compra.Mercadorias = mercadorias[i];
+                        Console.WriteLine("Quantidade de mercadoria: ");
+                        compra.Quantidade = int.Parse(Console.ReadLine());
+                        contexto.Compras.Add(compra);
+                        contexto.SaveChanges();
+                        Console.WriteLine("@Compra realizada com sucesso@");
+                    }
+                }
+            }
+        }
+
         private static void AtualizarMerc()
         {
 
@@ -186,7 +217,8 @@ namespace MercadoriasAlura
             Console.WriteLine("[02] - Deletar todas mercadorias");
             Console.WriteLine("[03] - Mostrar mercadoriais");
             Console.WriteLine("[04] - Atualizar info/Mercadoria");
-            Console.WriteLine("[05] - Sair");
+            Console.WriteLine("[05] - Realizar compra");
+            Console.WriteLine("[06] - Sair");
             Console.Write(": ");
         }
     }
